@@ -12,6 +12,8 @@ geometry: margin=2.54cm
 
 We will likely rely on Virtual Machines as our workhorse for this semester. Follow these instructions to create your Virtual Machine for the semester.
 
+**[>>Link To Recorded video instructions<<](https://duke.zoom.us/rec/share/iUF9TXgopj4Fh9jwIPmknYFyRjWHw8fjiKlIbYTNULgAMkZERO5UtjgvIWIdk2s.B3IRIbFOIlmP9QHJ)**
+
 ## 1. Creating the VM
 * Navigate to Duke's Virtual Computing Manager: [https://vcm.duke.edu/](https://vcm.duke.edu/)
 
@@ -54,7 +56,7 @@ We will likely rely on Virtual Machines as our workhorse for this semester. Foll
   * Right-click Windows PowerShell from the Windows Menu and select Run as Administrator
 * At the PowerShell prompt, type the following to install Google Chrome, Notepad++, and 7zip:
   ```powershell
-  choco install googlechrome notepadplusplus 7zip slack -y
+  choco install googlechrome notepadplusplus 7zip -y
   ```
   The script will fetch the installers and install them! You should see some icons on your desktop.
 

@@ -111,11 +111,11 @@ Type the following commands into the Terminal window in RStudio (bottom left)
 
 `git remote add upstream https://github.com/ENV872/Environmental_Data_Analytics_2021`
 
-`git pull upstream`
+`git pull upstream main`
 
 An alternate to pull is fetch + merge: 
 
-`git fetch upstream`
+`git fetch upstream main`
 
 `git merge upstream`
 
