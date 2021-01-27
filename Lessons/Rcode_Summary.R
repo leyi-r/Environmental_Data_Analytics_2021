@@ -1,3 +1,12 @@
+# Remove all memories
+rm(list = ls())
+# Don't forget to pull changes from Main Git (Type the following in Terminal)
+git remote add upstream https://github.com/ENV872/Environmental_Data_Analytics_2021
+git pull upstream main
+# Getting Help with R
+??seq
+help("seq")
+
 # Basic math (command+return will give the result of the command)
 1 + 1
 1 - 1
@@ -103,24 +112,65 @@ recipe6 <- function(x){
 meal4 <- recipe6(4); meal4
 meal5 <- recipe6(2); meal5
 
-# Getting Help with R
-??seq
-help("seq")
+# Function Example
+Pass_Fail <- function(x){
+  if(x>=50) {
+    Result_2 <- "TRUE"
+  }
+  else{
+    Result_2 <- "FALSE"
+  }
+  return(Result_2)
+}
+# Apply function to vector "scores"
+Result_2 <- lapply(scores, Pass_Fail)
+Result_2 #Result_2 is a list
+
+############ VECTORS 
+
+# Genertate Vectors
+x <- c(1,2,3,4,5)
+y <- 1:7; x
+z <- 2:-2; y
+seq(1, 3, by=0.2)
+x <- NULL #delete vetor x
 
 ############ DATAFRAME
+#(**data frame** is used for storing data tables.It a list a vector of equal length.
+# When we import data to R, data frame is the preferred way for storing the data because columns can have different modes
+# (character, numeric, integer, logical, complex).)
+
+cars # 2 columns and 50 rows
+car_speed <- cars$speed
+car_speed 
+class(car_speed) # car_speed is a numeric vector
+is.data.frame(car_speed) # car_speed is not a dataframe
 
 # Convert to dataframe
+df_car_speed <- as.data.frame(car_speed)
+df_car_speed
+class(df_car_speed) #Now is a dataframe
 
-# Add columns to df, use bind
+# Adding columns to current dataframe
 car_dist <- cars$dist
-df <-
-  
-# Names for dataframe
+#Option 1
+df <- cbind(df_car_speed,car_dist)  #similarly rows could be added using rbind()
+class(df)
+df
+#Or Option 2 - transform into a data frame before binding
+df_car_dist <- as.data.frame(car_dist)  #op2
+df_opt2 <- cbind(df_car_speed,df_car_dist)
+class(df_opt2)
+df_opt2
+#Note that when we transformed the vector in a data frame the name of the vector became the column name.
+
+# Check Column Names
 colnames(df)
 names(df)
 
 # Create a dataframe
 create_df <- data.frame("speed"=car_speed, "dist"=car_dist) #"" is for the variable name
+create_df
 
 # Dataframe functions
 ncol(df)
@@ -129,12 +179,10 @@ length(df) #same as ncol
 summary(df) 
 head(df) #show the first 6 rows of df
 
-# if you know the number of column you want you can refer to that to access the column
+# if you know the number of column or row you want you can refer to that to access them
 df[,1]
+df[1,]
 
 # Detele the second column in the dataframe
 df <- df[,-2]
 df
-
-#
-
