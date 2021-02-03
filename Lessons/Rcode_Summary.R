@@ -130,8 +130,8 @@ Result_2 #Result_2 is a list
 
 # Genertate Vectors
 x <- c(1,2,3,4,5)
-y <- 1:7; x
-z <- 2:-2; y
+y <- 1:7; y
+z <- 2:-2; z
 seq(1, 3, by=0.2)
 x <- NULL #delete vetor x
 
@@ -186,3 +186,92 @@ df[1,]
 # Detele the second column in the dataframe
 df <- df[,-2]
 df
+
+############ DATA EXPLORATION
+# Working Directory (click "More" to set working directory)
+getwd()
+setwd("~/Documents/研二/872 Environmental Data Analytics/Environmental_Data_Analytics_2021/Lessons")
+
+# Install and Load packages(use install.packages to install; library command to load the packages), always put a chunk at the beginning of your code
+install.packages("dplyr") 
+install.packages("ggplot2")
+install.packages("tidyverse")
+library(dplyr)
+library(ggplot2)
+library(tidyverse)
+
+# Import Datasets
+#Commons functions to import datasets and store as data frames are *read.table()*, *read.csv()*, *read.xlsx()*.
+# Absolute file path (not recommended)
+read.csv("/Users/lmm89/OneDrive/Duke_University/7_Spring2021/ENV872_EDA/GitRepo_EDA_S2021/Environmental_Data_Analytics_2021/Data/Raw/USGS_Site02085000_Flow_Raw.csv")
+# Relative file path (friendly for users regardless of machine)
+USGS.flow.data<-read.csv("../Environmental_Data_Analytics_2021/Data/Raw/USGS_Site02085000_Flow_Raw.csv")
+# What happens if we don't assign a name to our imported dataset?(use tab after /)
+read.csv("../Data/Raw/USGS_Site02085000_Flow_Raw.csv")
+# Another option is to choose with your browser
+read.csv(file.choose())
+# To import .txt files, use read.table rather than read.csv
+read.table()
+
+# Data Exploration
+View(USGS.flow.data) #Alternate option: click on data frame in Environment tab
+class(USGS.flow.data) 
+colnames(USGS.flow.data) #column variables
+
+# Rename columns
+colnames(USGS.flow.data) <- c("agency_cd", "site_no", "datetime", 
+                              "discharge.max", "discharge.max.approval", 
+                              "discharge.min", "discharge.min.approval", 
+                              "discharge.mean", "discharge.mean.approval", 
+                              "gage.height.max", "gage.height.max.approval", 
+                              "gage.height.min", "gage.height.min.approval", 
+                              "gage.height.mean", "gage.height.mean.approval")
+str(USGS.flow.data) #display structure of the dataset
+dim(USGS.flow.data) #dimension of the object
+length(USGS.flow.data) #the length of vectors
+
+head(USGS.flow.data)
+head(USGS.flow.data, 10)
+tail(USGS.flow.data, 5) #last five rows
+USGS.flow.data[30000:30005, c(3, 8, 14)] #c is column numbers
+
+class(USGS.flow.data$datetime)
+class(USGS.flow.data$discharge.mean)
+class(USGS.flow.data$gage.height.mean)
+
+summary(USGS.flow.data)  #could point to column only with $
+summary(USGS.flow.data$discharge.max)
+
+# Find NAs
+summary(USGS.flow.data$discharge.mean)
+summary(USGS.flow.data$gage.height.mean)
+# Remove NAs
+USGS.flow.data.complete <- na.omit(USGS.flow.data) #remove NAs and create as a new dataframe
+dim(USGS.flow.data)
+dim(USGS.flow.data.complete)
+mean(USGS.flow.data.complete$discharge.mean)
+sd(USGS.flow.data.complete$discharge.mean)
+summary(USGS.flow.data.complete$discharge.mean)
+
+# Format Dates
+##R will attempt to use %Y-%m-%d or %Y/%m/%d as a default. 
+## %d  day as number (0-31)
+## %m  month (00-12, can be e.g., 01 or 1)
+## %y  2-digit year
+## %Y  4-digit year
+## %a  abbreviated weekday
+## %A  unabbreviated weekday
+## %b  abbreviated month
+## %B  unabbreviated month
+help(as.Date)
+USGS.flow.data$datetime <- as.Date(USGS.flow.data$datetime, format = "%m/%d/%y") 
+View(USGS.flow.data) ##YEAR 2020-2068 did not happen yet, they should be 1920-1968
+USGS.flow.data$datetime <- format(USGS.flow.data$datetime, "%y%m%d") #transform back to 
+create.early.dates <- (function(d) {
+  paste0(ifelse(d > 191226,"19","20"),d)
+})
+USGS.flow.data$datetime <- create.early.dates(USGS.flow.data$datetime)
+USGS.flow.data$datetime <- as.Date(USGS.flow.data$datetime, format = "%Y%m%d") 
+
+# Save dataset
+write.csv(USGS.flow.data, file = "../Environmental_Data_Analytics_2021/Data/Processed/USGS_Site02085000_Flow_Processed.csv", row.names=FALSE)
