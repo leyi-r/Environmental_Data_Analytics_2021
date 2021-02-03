@@ -275,3 +275,6 @@ USGS.flow.data$datetime <- as.Date(USGS.flow.data$datetime, format = "%Y%m%d")
 
 # Save dataset
 write.csv(USGS.flow.data, file = "../Environmental_Data_Analytics_2021/Data/Processed/USGS_Site02085000_Flow_Processed.csv", row.names=FALSE)
+
+#### LOOK AT LAB3_MoreDataExploration #####
+
