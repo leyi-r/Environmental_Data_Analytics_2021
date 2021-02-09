@@ -1,6 +1,6 @@
 ---
 title: "Assignment 1: Introduction"
-author: "Student Name"
+author: "Leyi Ruan"
 output: pdf_document
 geometry: margin=2.54cm
 ---
@@ -16,27 +16,27 @@ This exercise accompanies the introductory material in Environmental Data Analyt
 6. When you have completed the assignment, **Knit** the text and code into a single PDF file.
 8. After Knitting, submit the completed exercise (PDF file) to the dropbox in Sakai. Add your last name into the file name (e.g., "Salk_A03_Introduction.Rmd") prior to submission.
 
-The completed exercise is due on <>.
+The completed exercise is due on <January 25th, 2021>.
 
 ## 1) Discussion Questions
 
 1. What are your previous experiences with data analytics, R, and Git? Include both formal and informal training.
 
-> Answer: 
+> Answer: I have taken ENVIRON710(Applied Statistics) with Betsy, and using R to analyze survey data to assist Professor's research on willingness to pay. I have also used Python and Stata for my Master Project on stumpage price data analysis, and energy modeling course & power market course.
 
 2. Are there any components of the course about which you feel confident?
 
-> Answer: 
+> Answer: I'm confident with most part of it, since I had previous experience with data wrangling in Python and Stata. I guess most concepts would be the same. 
 
 3. Are there any components of the course about which you feel apprehensive?
 
-> Answer: 
+> Answer: Nothing. I'm eager to learn all the topics.
 
 
 ## 2) GitHub
 
 Provide a link below to your forked course repository in GitHub. Make sure you have pulled all recent changes from the course repository  and that you have updated your course README file. 
 
-> Answer: 
+> Answer: https://github.com/leyi-r/Environmental_Data_Analytics_2021
 
 

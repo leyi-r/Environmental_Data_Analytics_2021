@@ -277,4 +277,54 @@ USGS.flow.data$datetime <- as.Date(USGS.flow.data$datetime, format = "%Y%m%d")
 write.csv(USGS.flow.data, file = "../Environmental_Data_Analytics_2021/Data/Processed/USGS_Site02085000_Flow_Processed.csv", row.names=FALSE)
 
 #### LOOK AT LAB3_MoreDataExploration #####
+summary(as.factor(Neonics$Effect))
 
+###Graph 
+# bar chart
+ggplot(USGS.flow.data, aes(x = discharge.mean.approval)) +
+  geom_bar()
+ggplot(na.omit(USGS.flow.data), aes(x = discharge.mean.approval)) +
+  geom_bar()
+# histogram 
+ggplot(USGS.flow.data) +
+  geom_histogram(aes(x = discharge.mean))
+ggplot(USGS.flow.data) +
+  geom_histogram(aes(x = discharge.mean), binwidth = 10)
+ggplot(USGS.flow.data) +
+  geom_histogram(aes(x = discharge.mean), bins = 20)
+ggplot(USGS.flow.data, aes(x = discharge.mean)) +
+  geom_histogram(binwidth = 10) + 
+  scale_x_continuous(limits = c(0, 500))
+ggplot(USGS.flow.data) +
+  geom_histogram(aes(x = gage.height.mean))
+
+# Frequency Line Graph
+# geom_freqpoly
+ggplot(USGS.flow.data) +
+  geom_freqpoly(aes(x = gage.height.mean), bins = 50) +
+  geom_freqpoly(aes(x = gage.height.min), bins = 50, color = "darkgray") +
+  geom_freqpoly(aes(x = gage.height.max), bins = 50,  lty = 2) +
+  scale_x_continuous(limits = c(0, 10))
+# color the value with mean approval
+ggplot(USGS.flow.data) +
+  geom_freqpoly(aes(x = gage.height.mean, color = gage.height.mean.approval), bins = 50) +
+  scale_x_continuous(limits = c(0, 10)) +
+  theme(legend.position = "top")
+
+# Box Plot
+#
+ggplot(USGS.flow.data) +
+  geom_boxplot(aes(x = gage.height.mean.approval, y = gage.height.mean))
+# like histogram, the distribution of values in the gage.height.mean
+ggplot(USGS.flow.data) +
+  geom_boxplot(aes(x = gage.height.mean, y = discharge.mean, group = cut_width(gage.height.mean, 1)))
+# how many data points are at the certain quantiles
+ggplot(USGS.flow.data) +
+  geom_violin(aes(x = gage.height.mean.approval, y = gage.height.mean), 
+              draw_quantiles = c(0.25, 0.5, 0.75))
+
+# Scatterplot
+ggplot(USGS.flow.data) +
+  geom_point(aes(x = discharge.mean, y = gage.height.mean))
+ggplot(USGS.flow.data) +
+  geom_point(aes(x = datetime, y = discharge.mean))
