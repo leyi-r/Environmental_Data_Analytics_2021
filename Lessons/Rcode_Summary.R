@@ -206,6 +206,7 @@ library(tidyverse)
 read.csv("/Users/lmm89/OneDrive/Duke_University/7_Spring2021/ENV872_EDA/GitRepo_EDA_S2021/Environmental_Data_Analytics_2021/Data/Raw/USGS_Site02085000_Flow_Raw.csv")
 # Relative file path (friendly for users regardless of machine)
 USGS.flow.data<-read.csv("../Environmental_Data_Analytics_2021/Data/Raw/USGS_Site02085000_Flow_Raw.csv")
+NTL.phys.data <- read.csv("./Data/Raw/NTL-LTER_Lake_ChemistryPhysics_Raw.csv", stringsAsFactors = TRUE)
 # What happens if we don't assign a name to our imported dataset?(use tab after /)
 read.csv("../Data/Raw/USGS_Site02085000_Flow_Raw.csv")
 # Another option is to choose with your browser
@@ -328,3 +329,16 @@ ggplot(USGS.flow.data) +
   geom_point(aes(x = discharge.mean, y = gage.height.mean))
 ggplot(USGS.flow.data) +
   geom_point(aes(x = datetime, y = discharge.mean))
+
+##### Data Wrangling
+#Rows:
+filter() #chooses rows based on column values.
+slice() #chooses rows based on location.
+arrange() #changes the order of the rows.
+#Columns:
+select() #changes whether or not a column is included.
+rename() #changes the name of columns.
+mutate() #changes the values of columns and creates new columns.
+relocate() #changes the order of the columns.
+#Groups of rows:
+summarise() #collapses a group into a single row
