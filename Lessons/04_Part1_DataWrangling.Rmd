@@ -117,6 +117,7 @@ NTL.phys.data.1999<- filter(NTL.phys.data, year4==1999)
 # filter NTL.phys.data for Tuesday Lake from 1990 through 1999.
 NTL.phys.data.TuesdayLake<- filter(NTL.phys.data, lakename=="Tuesday Lake", year4>=1990, year4<=1999)
 summary(NTL.phys.data.TuesdayLake$year4)
+summary(NTL/NTL.phys.data$lakename, maxsum=3)
 ```
 Question: Why don't we filter using row numbers?
 

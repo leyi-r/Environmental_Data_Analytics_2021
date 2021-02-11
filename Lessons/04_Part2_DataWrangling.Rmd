@@ -17,6 +17,8 @@ editor_options:
 
 ```{r, message = FALSE}
 getwd()
+#install.packages("plyr")
+library(plyr)
 library(dplyr)
 library(tidyverse)
 library(lubridate)
@@ -44,6 +46,7 @@ colnames(NTL.nutrient.data.PeterPaul)
 dim(NTL.nutrient.data.PeterPaul)
 str(NTL.nutrient.data.PeterPaul)
 summary(NTL.nutrient.data.PeterPaul$lakename) 
+
 # Notice that other lake names didn't go away, even though they have zero values
 NTL.nutrient.data.PeterPaul <- droplevels(NTL.nutrient.data.PeterPaul)
 summary(NTL.nutrient.data.PeterPaul$lakename)
@@ -99,12 +102,12 @@ write.csv(NTL.nutrient.data.PeterPaul.gathered, row.names = FALSE,
           file = "./Data/Processed/NTL-LTER_Lake_Nutrients_PeterPaulGathered_Processed.csv")
 
 # Spread nutrient data into separate columns
-#NTL.nutrient.data.PeterPaul.spread <- spread(NTL.nutrient.data.PeterPaul.gathered, nutrient, concentration)
+NTL.nutrient.data.PeterPaul.spread <- spread(NTL.nutrient.data.PeterPaul.gathered, nutrient, concentration)
 
 # Spread nutrient data into separate columns using pivot_wider
 NTL.nutrient.data.PeterPaul.spread2 <- pivot_wider(NTL.nutrient.data.PeterPaul.gathered, names_from = nutrient, values_from = concentration)
 
-# Split components of cells into multiple columns
+# Split components of cells into multiple columns ( c("Y", "m", "d") is the format you want separate to be)
 # Opposite of 'separate' is 'unite'
 NTL.nutrient.data.PeterPaul.dates <- separate(NTL.nutrient.data.PeterPaul.subset, sampledate, c("Y", "m", "d"))
 
@@ -154,6 +157,7 @@ However, there are 20 months in this dataset, so importing all these files indiv
 LitterFiles = list.files(path = "./Data/Raw/NIWO_Litter/", pattern="*.csv", full.names=TRUE)
 LitterFiles
 
+# using pipe to read.csv of all the files in LitterFiles
 Litter <- LitterFiles %>%
   ldply(read.csv)
 ```
