@@ -57,12 +57,20 @@ NTL.phys.data.JunethruOctober <- filter(NTL.phys.data, daynum %in% c(152:304))
 # Exercise 1: 
 # filter NTL.phys.data for the year 1999
 # what code do you need to use, based on the class of the variable?
-
+class(NTL.phys.data$year4)
+NTL.phys.data.year1999 <- filter(NTL.phys.data, year4 == 1999)
 
 # Exercise 2: 
 # filter NTL.phys.data for Tuesday Lake from 1990 through 1999.
+NTL.phys.data.Tuesday <- filter(NTL.phys.data, lakename=="Tuesday Lake", year4 %in% c(1990:1999))
 
-
+NTL.phys.data.Tuesday <-
+  NTL.phys.data %>%
+  filter(year4%in%c(1990:1999)) %>%
+  filter(lakename=="Tuesday lake")
+summary(NTL.phys.data.Tuesday$lakename)
+NTL.phys.data.Tuesday <- droplevels(NTL.phys.data.Tuesday)
+summary(NTL.phys.data.Tuesday$lakename)
 ```
 Question: Why don't we filter using row numbers?
 
@@ -82,14 +90,19 @@ NTL.phys.data.processed <-
   mutate(temperature_F = (temperature_C*9/5) + 32)
 
 #Exercise 3: Using a pipe filter NTL.phys.data for Tuesday Lake from 1990 through 1999 only for July 
-
-
-
-
+Tues1990s <-
+  NTL.phys.data %>%
+  filter(year4 %in% c(1990:1999)) %>%
+  filter(lakename=="Tuesday Lake") %>%
+  mutate(month=month(sampledate))
+  filter(month==7)
 
 #Exercise 4: Using the data from part 3, a pipe and the summarise() function find the mean surface temperature (hints: you will need to add another filter for depth==0). Make sure you eliminate NAs before computing the means
-
-  
+MeanSurfTemp <-
+  Tues1990s %>%
+  filter(depth==0) %>%
+  drop_na(temperature_C) %>%
+  summarise(meantemp=mean(temperature_C))
 ```
 
 ## Gather and Spread
