@@ -341,4 +341,10 @@ rename() #changes the name of columns.
 mutate() #changes the values of columns and creates new columns.
 relocate() #changes the order of the columns.
 #Groups of rows:
+group_by()
+intersect()
+#Remove NAs
+drop_na()
+!is.na()
+na.omit()
 summarise() #collapses a group into a single row
