@@ -1,6 +1,6 @@
 ---
 title: "Assignment 4: Data Wrangling"
-author: "Student Name"
+author: "Leyi Ruan"
 output: pdf_document
 geometry: margin=2.54cm
 ---
@@ -20,13 +20,34 @@ The completed exercise is due on Tuesday, Feb 16 @ 11:59pm.
 
 ## Set up your session 
 1. Check your working directory, load the `tidyverse` and `lubridate` packages, and upload all four raw data files associated with the EPA Air dataset. See the README file for the EPA air datasets for more information (especially if you have not worked with air quality data previously). 
-
+```{r, message = FALSE}
+library(tidyverse)
+library(lubridate)
+PM25_2019<-read.csv("../Data/Raw/EPAair_PM25_NC2019_raw.csv")
+PM25_2018<-read.csv("../Data/Raw/EPAair_PM25_NC2018_raw.csv")
+O3_2019<-read.csv("../Data/Raw/EPAair_O3_NC2019_raw.csv")
+O3_2018<-read.csv("../Data/Raw/EPAair_O3_NC2018_raw.csv")
+```
 2. Explore the dimensions, column names, and structure of the datasets. 
 
 ```{r, message = FALSE}
-#1
+#1 Explore PM25 datasets
+dim(PM25_2019)
+colnames(PM25_2019)
+str(PM25_2019)
 
-#2
+dim(PM25_2018)
+colnames(PM25_2018)
+str(PM25_2018)
+
+#2 Explore O3 datasets
+dim(O3_2019)
+colnames(O3_2019)
+str(O3_2019)
+
+dim(O3_2018)
+colnames(O3_2018)
+str(O3_2018)
 ```
 
 ## Wrangle individual datasets to create processed files.
@@ -36,13 +57,27 @@ The completed exercise is due on Tuesday, Feb 16 @ 11:59pm.
 6. Save all four processed datasets in the Processed folder. Use the same file names as the raw files but replace "raw" with "processed".
 
 ```{r}
-#3
+#3 Change date to date variable
+PM25_2019$Date<- as.Date(PM25_2019$Date, format = "%m/%d/%Y")
+PM25_2018$Date<-as.Date(PM25_2018$Date, format = "%m/%d/%Y")
+O3_2019$Date<-as.Date(O3_2019$Date, format = "%m/%d/%Y")
+O3_2018$Date<-as.Date(O3_2018$Date, format = "%m/%d/%Y")
 
-#4
+#4 Select the following columns: Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE
+PM25_2019.select <- select(PM25_2019, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
+PM25_2018.select <- select(PM25_2018, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
+O3_2019.select <- select(O3_2019, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
+O3_2018.select <- select(O3_2018, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
 
-#5
+#5 For the PM2.5 datasets, fill all cells in AQS_PARAMETER_DESC with "PM2.5" (all cells in this column should be identical).
+PM25_2019.AQS<-mutate(PM25_2019.select, AQS_PARAMETER_DESC ="PM2.5" )
+PM25_2018.AQS<-mutate(PM25_2018.select, AQS_PARAMETER_DESC ="PM2.5" )
 
-#6
+#6 Save all four processed datasets in the Processed folder. Use the same file names as the raw files but replace "raw" with "processed".
+write.csv(PM25_2019.AQS, row.names = FALSE, file = "../Data/Processed/EPAair_PM25_NC2019_processed.csv")
+write.csv(PM25_2018.AQS, row.names = FALSE, file = "../Data/Processed/EPAair_PM25_NC2018_processed.csv")
+write.csv(O3_2019.select, row.names = FALSE, file = "../Data/Processed/EPAair_O3_NC2019_processed.csv")
+write.csv(O3_2018.select, row.names = FALSE, file = "../Data/Processed/EPAair_O3_NC2018_processed.csv")
 
 ```
 
@@ -61,16 +96,38 @@ The completed exercise is due on Tuesday, Feb 16 @ 11:59pm.
 11. Save your processed dataset with the following file name: "EPAair_O3_PM25_NC1718_Processed.csv"
 
 ```{r}
-#7
+#7 Combine the four datasets with `rbind`. Make sure your column names are identical prior to running this code. 
+colnames(O3_2018.select)
+colnames(O3_2019.select)
+colnames(PM25_2018.AQS)
+colnames(PM25_2019.AQS)
 
-#8
+Airquality.all<-rbind(PM25_2018.AQS, PM25_2019.AQS, O3_2018.select, O3_2019.select)
 
-#9
+#8 Wrangle your new dataset with a pipe function (%>%) so that it fills the following conditions: 
+PM25_Common_sites<-intersect(PM25_2018.AQS$Site.Name, PM25_2019.AQS$Site.Name)
+O3_Common_sites<-intersect(O3_2018.select$Site.Name, O3_2019.select$Site.Name)
+All_sites<-intersect(PM25_Common_sites, O3_Common_sites)
+All_sites
 
-#10
+All <- 
+  Airquality.all %>%
+  filter(Site.Name=="Linville Falls" | Site.Name=="Durham Armory" | Site.Name=="Leggett"| Site.Name== "Hattie Avenue"|Site.Name== "Clemmons Middle"| Site.Name=="Mendenhall School"|Site.Name== "Frying Pan Mountain"|Site.Name== "West Johnston Co."|Site.Name== "Garinger High School"|Site.Name=="Castle Hayne"|Site.Name=="Pitt Agri. Center"|Site.Name== "Bryson City"|Site.Name=="Millbrook School") %>%
+  group_by(Date, Site.Name, AQS_PARAMETER_DESC, COUNTY) %>%
+  summarise(mean_DAILY_AQI_VALUE=mean(DAILY_AQI_VALUE),
+            mean_SITE_LATITUDE=mean(SITE_LATITUDE),
+            mean_SITE_LONGITUDE=mean(SITE_LONGITUDE)) %>%
+  mutate(Month=month(Date)) %>%
+  mutate(Year=year(Date))
+  
+#9 Spread your datasets such that AQI values for ozone and PM2.5 are in separate columns. Each location on a specific date should now occupy only one row.
+All.spread<- pivot_wider(All, names_from = AQS_PARAMETER_DESC, values_from = mean_DAILY_AQI_VALUE)
 
-#11
+#10 Call up the dimensions of your new tidy dataset.
+dim(All.spread)
 
+#11 Save your processed dataset with the following file name: "EPAair_O3_PM25_NC1718_Processed.csv"
+write.csv(All.spread, row.names = FALSE, file="../Data/Processed/EPAair_O3_PM25_NC1718_Processed.csv")
 ```
 
 
@@ -80,14 +137,18 @@ The completed exercise is due on Tuesday, Feb 16 @ 11:59pm.
 13. Call up the dimensions of the summary dataset.
 
 ```{r}
-#12a
-
-#12b
+#12a.b
+All.spread.summaries<-
+  All.spread %>%
+  group_by(Site.Name, Month, Year) %>%
+  summarise(mean_Ozone=mean(Ozone),
+            meand_PM2.5=mean(PM2.5)) %>%
+  drop_na(Month, Year) 
 
 #13
-
+dim(All.spread.summaries)
 ```
 
 14. Why did we use the function `drop_na` rather than `na.omit`?
 
-> Answer: 
+> Answer: drop_na drops rows containing missing values for specific columns. na.omit remove all NAs in the dataset.
