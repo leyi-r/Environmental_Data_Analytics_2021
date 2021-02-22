@@ -73,15 +73,15 @@ If you would like to set a common theme across all plots in your analysis sessio
 mytheme <- theme_classic(base_size = 14) +
   theme(axis.text = element_text(color = "black"), 
         legend.position = "top") #alternative: legend.position + legend.justification
-
+# base_size is 11 in default ggplot
 # options: call the theme in each plot or set the theme at the start. 
 
 O3plot5 <- ggplot(EPAair) +
   geom_point(aes(x = Date, y = Ozone)) +
-  mytheme
+  mytheme #setting theme within the plot environment
 print(O3plot5)  
 
-theme_set(mytheme)
+theme_set(mytheme) #set theme for all subsequent plots
 
 O3plot6 <- ggplot(EPAair) +
   geom_point(aes(x = Date, y = Ozone))
@@ -97,12 +97,12 @@ While the theme allows us to set multiple aspects of plots, ggplot allows us to 
 O3plot7 <- ggplot(EPAair, aes(x = Date, y = Ozone)) +
   geom_hline(yintercept = 50, lty = 2) +
   geom_hline(yintercept = 100, lty = 2) +
-  geom_point(alpha = 0.5, size = 1.5) +
+  geom_point(alpha = 0.5, size = 1.5) + #alpha is transparency
   geom_text(x = as.Date("2020-01-01"), y = 45, label = "good", hjust = 1, fontface = "bold") +   # hjust = 1 means left align
   geom_text(x = as.Date("2020-01-01"), y = 95, label = "moderate", hjust = 1, fontface = "bold") +
   geom_text(x = as.Date("2020-01-01"), y = 120, label = "unhealthy (sensitive groups)", hjust = 1, fontface = "bold") +
   scale_x_date(limits = as.Date(c("2018-01-01", "2019-12-31")), 
-    date_breaks = "2 months", date_labels = "%b %y") +
+    date_breaks = "2 months", date_labels = "%b %y") + #%b-abbreviated name of the month
   ylab(expression("O"[3]* " AQI Value")) +
   theme(axis.text.x = element_text(angle = 45,  hjust = 1))
 print(O3plot7)  
@@ -175,7 +175,7 @@ print(NvsP)
 NvsP2 <-
   ggplot(PeterPaul.chem.nutrients, aes(x = tp_ug, y = tn_ug, color = depth, shape = lakename)) +
   geom_point(alpha = 0.7, size = 2.5) +
-  #labs() + # change your legend labels here
+  labs(color="Depth",shape="Lake name") + # change your legend labels here
   scale_shape_manual(values = c(15, 17)) +
   #scale_color_distiller(palette = "Blues", direction = 1) + # use scale_color_brewer for discrete variables
   scale_color_viridis(option = "magma", direction = -1) +
