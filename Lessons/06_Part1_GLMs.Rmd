@@ -98,7 +98,7 @@ An exploratory option to visualize the model fit is to use the function `plot`. 
 4. **Residuals vs. Leverage.** This graph will display potential outliers. The values that fall outside the dashed red lines (Cook's distance) are outliers for the model. Watch for drastic departures of the solid red line from horizontal - this is a sign of a poor model fit.
 
 ```{r, fig.height = 3, fig.width = 4}
-par(mfrow = c(2,2), mar=c(4,4,4,4))
+# par(mfrow = c(2,2), mar=c(4,4,4,4)) #divide screen into 2 by 2 screen
 plot(irradiance.regression)
 par(mfrow = c(1,1))
 ```
@@ -112,6 +112,7 @@ irradiancebydepth <-
   ylim(0, 2000) +
   geom_point() 
 print(irradiancebydepth) 
+# no linear relationship between two variables
 ```
 
 Given the distribution of irradiance values, we don't have a linear relationship between x and y in this case. Let's try log-transforming the irradiance values. Note we also removing the observations that seems to ba an outlier.
@@ -119,6 +120,7 @@ Given the distribution of irradiance values, we don't have a linear relationship
 ```{r, fig.height = 3, fig.width = 4}
 PeterPaul.chem.nutrients <- filter(PeterPaul.chem.nutrients, 
                                    irradianceWater != 0 & irradianceWater < 5000)
+# since log-transformation, take 0 and outlier out
 irradiance.regression2 <- lm(data = PeterPaul.chem.nutrients, log(irradianceWater) ~ depth)
 summary(irradiance.regression2)
 
@@ -130,7 +132,7 @@ par(mfrow = c(1,1))
 irradiancebydepth2 <- 
   ggplot(PeterPaul.chem.nutrients, aes(x = depth, y = irradianceWater)) +
   geom_smooth(method = "lm") +
-  scale_y_log10() +
+  scale_y_log10() + #log y
   geom_point() 
 print(irradiancebydepth2) 
 
@@ -139,7 +141,7 @@ irradiancebydepth2 <-
     ggplot(PeterPaul.chem.nutrients, aes(x = depth, y = irradianceWater)) +
     geom_point() +
     scale_y_log10() +  #log transformed values for irradianceWater
-    geom_smooth(method = 'lm', se = FALSE, color = "black")
+    geom_smooth(method = 'lm', se = FALSE, color = "black") #se=fALSE takes out confidence interval from the line
 print(irradiancebydepth2)
 
 # Make the graph attractive
@@ -178,7 +180,7 @@ PeterPaulnutrients <-
   na.omit()
 PeterPaulCorr <- cor(PeterPaulnutrients)
 corrplot(PeterPaulCorr, method = "ellipse")
-corrplot.mixed(PeterPaulCorr, upper = "ellipse")
+corrplot.mixed(PeterPaulCorr, upper = "ellipse") #only show upper-half
 ```
 
 ## AIC to select variables
@@ -197,6 +199,7 @@ TPAIC <- lm(data = Paul.naomit, tp_ug ~ depth + dissolvedOxygen +
 
 #Choose a model by AIC in a Stepwise Algorithm
 step(TPAIC)
+#Run the best-fitted model
 TPmodel <- lm(data = Paul.naomit, tp_ug ~ dissolvedOxygen + temperature_C + tn_ug)
 summary(TPmodel)
 

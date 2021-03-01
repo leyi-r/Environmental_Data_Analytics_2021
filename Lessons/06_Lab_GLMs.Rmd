@@ -67,6 +67,8 @@ Are Ozone levels below the threshold for "good" AQI index (0-50)?
 > Exercise 1: State the hypotheses for testing mean of AQI index.
 
 > Answer: 
+H0: mu>=50
+Ha: mu<50
 
 
 ```{r}
@@ -75,15 +77,17 @@ Are Ozone levels below the threshold for "good" AQI index (0-50)?
 summary(EPAair$Ozone)
 EPAair.subsample <- sample_n(EPAair, 5000)
 
-# Evaluate assumption of normal distribution
-shapiro.test((EPAair.subsample$Ozone))
+# Evaluate assumption of normal distribution (use the sample to test)
+shapiro.test((EPAair.subsample$Ozone)) #reject the normal hypothesis
 ggplot(EPAair, aes(x = Ozone)) +
   geom_histogram() 
 qqnorm(EPAair$Ozone); qqline(EPAair$Ozone)
 
+#Run t-test (results: reject null)
 O3.onesample <- t.test(EPAair$Ozone, mu = 50, alternative = "less")
 O3.onesample
 
+#Density Curve
 Ozone.plot <- ggplot(EPAair, aes(x = Ozone)) +
   #geom_density(stat = "count", fill = "gray") +
   geom_density(fill = "gray") +
@@ -106,7 +110,7 @@ shapiro.test(EPAair$Ozone[EPAair$Year == 2019])
 
 #p-value less than 0.05 then reject null for 2018 and 2019 i.e. data do not follow normal distribution
 
-#Compare variance using F-test (only)
+#Compare variance using F-test (only); not bartlett test because only two groups
 var.test(EPAair$Ozone ~ EPAair$Year)
 
 #p-value less than 0.05 then reject null for 2018 and 2019 i.e. true ratio not equal to one
@@ -114,7 +118,7 @@ var.test(EPAair$Ozone ~ EPAair$Year)
 ggplot(EPAair, aes(x = Ozone, color = as.factor(Year))) +
   geom_freqpoly()
 
-# Format as a t-test
+# Format as a t-test (reject null)
 O3.twosample <- t.test(EPAair$Ozone ~ EPAair$Year)
 O3.twosample
 O3.twosample$p.value
@@ -162,11 +166,16 @@ For the NTL-LTER dataset, can we predict PM2.5 from Ozone?
 ```{r}
 
 #Exercise 3: Run a linear regression PM2.5 by Ozone. Find the p-value and R-squared value. 
-
+PM2.5byOzone.regression<_lm(data=EPAair, PM2.5~Ozone)
+summary(PM2.5byOzone.regression) #ONLY 13% variation is explained by Ozone
 
 
 #Exercise 4: Build a scatterplot. Add a line and standard error for the linear regression. Add the regression equation to the plot
-
+PM2.5byOzone.Plot<-
+  ggplot(EPAair, aes(x=Ozone, y=PM2.5))+
+  geom_smooth(method="lm")+
+  geom_point()
+print(PM2.5byOzone.Plot)
 
 
 ```
@@ -179,17 +188,25 @@ What other variables can we add to improve model?
 ```{r}
 
 #Exercise 5: Build correlation plots and identify more possible explanatory variables to add to the regression.
+library(corrplot)
+EPAair.subset<-
+  EPAair %>%
+  select(SITE_LATITUDE:PM2.5) %>%
+  na.omit()
 
-
+EPAairCorr<-cor(EPAair.subset)
+corrplot(EPAairCorr, method="ellipse")
+corrplot.mixed(EPAairCorr, upper="ellipse")
 
 
 #Exercise 6: Choose a model by AIC in a Stepwise Algorithm. Do the results from AIC match the variables you selected on Exercise 5?
+OzonebyALL.regression<-lm(data=EPAair.subset, PM2.5 ~ Ozone + Year + Month + SITE_LONGITUDE +SITE_LATITUDE)
 
-
-
+step(OzonebyALL.regression)
 
 #Exercise 7: Run another regression using the variables selected on Exercise 6. Compare r-squared value withthe one from Exercise 5. 
-
+OzonebyBest.regression<-lm(data=EPAair.subset, PM2.5 ~ Ozone + Month + SITE_LONGITUDE +SITE_LATITUDE)
+summary(OzonebyBest.regression)
 ```
 
 

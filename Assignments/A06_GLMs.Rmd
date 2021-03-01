@@ -1,6 +1,6 @@
 ---
 title: "Assignment 7: GLMs (Linear Regressios, ANOVA, & t-tests)"
-author: "Student Name"
+author: "Leyi Ruan"
 output: pdf_document
 geometry: margin=2.54cm
 editor_options: 
